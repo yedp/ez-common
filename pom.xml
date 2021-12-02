@@ -6,7 +6,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.executable>D:\Program\GnuPG\bin\gpg</gpg.executable>
-        <gpg.passphrase>5022Yedp</gpg.passphrase>
     </properties>
 
     <groupId>com.github.yedp</groupId>
