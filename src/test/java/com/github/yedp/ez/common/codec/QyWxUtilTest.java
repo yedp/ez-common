@@ -58,5 +58,11 @@ public class QyWxUtilTest {
         System.out.println(JsonUtil.toJsonString(retObj));
     }
 
+    @Test
+    public void tesSendNews() throws IOException {
+        RetObj retObj = QyWxUtil.sendNews(groupId,"测试标题","测试描述","www.qq.com","http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png");
+        System.out.println(JsonUtil.toJsonString(retObj));
+    }
+
 
 }
