@@ -1,12 +1,17 @@
 package com.github.yedp.ez.common.codec;
 
 import com.github.yedp.ez.common.model.RetObj;
+import com.github.yedp.ez.common.util.FileUtil;
 import com.github.yedp.ez.common.util.JsonUtil;
 import com.github.yedp.ez.common.util.QyWxUtil;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigInteger;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,4 +50,13 @@ public class QyWxUtilTest {
         RetObj retObj = QyWxUtil.sendMsgMarkdown(groupId, "测试**加粗**");
         System.out.println(JsonUtil.toJsonString(retObj));
     }
+
+    @Test
+    public void tesSendImage() throws IOException {
+        File file = new File("D:/qrcode.png");
+        RetObj retObj = QyWxUtil.sendImage(groupId,file);
+        System.out.println(JsonUtil.toJsonString(retObj));
+    }
+
+
 }

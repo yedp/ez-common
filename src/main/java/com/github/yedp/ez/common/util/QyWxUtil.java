@@ -3,6 +3,7 @@ package com.github.yedp.ez.common.util;
 import com.github.yedp.ez.common.enums.RetCodeEnum;
 import com.github.yedp.ez.common.model.RetObj;
 import com.github.yedp.ez.common.model.req.QyWxFileReq;
+import com.github.yedp.ez.common.model.req.QyWxImageReq;
 import com.github.yedp.ez.common.model.req.QyWxMarkdownReq;
 import com.github.yedp.ez.common.model.req.QyWxTextReq;
 import com.github.yedp.ez.common.model.resp.QyWxBaseResp;
@@ -87,6 +88,7 @@ public class QyWxUtil {
         return parseRetObj(res);
     }
 
+
     /**
      * 发送消息markdown格式
      *
@@ -96,7 +98,36 @@ public class QyWxUtil {
      * @throws IOException 异常
      */
     public static RetObj sendMsgMarkdown(String groupId, String msg) throws IOException {
-        QyWxMarkdownReq req = new  QyWxMarkdownReq(msg);
+        QyWxMarkdownReq req = new QyWxMarkdownReq(msg);
+        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        return parseRetObj(res);
+    }
+
+    /**
+     * 发送图片
+     *
+     * @param groupId 群key
+     * @param base64 图片内容的base64编码
+     * @param md5 图片内容（base64编码前）的md5值
+     * @return  结果
+     * @throws IOException
+     */
+    public static RetObj sendImage(String groupId, String base64, String md5) throws IOException {
+        QyWxImageReq req = new QyWxImageReq(base64, md5);
+        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        return parseRetObj(res);
+    }
+
+    /**
+     * 发送图片
+     *
+     * @param groupId 群key
+     * @param file    图片文件
+     * @return 结果
+     * @throws IOException
+     */
+    public static RetObj sendImage(String groupId, File file) throws IOException {
+        QyWxImageReq req = new QyWxImageReq(FileUtil.toBase64(file), FileUtil.toMd5(file));
         String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
