@@ -12,7 +12,9 @@ public class DateUtils {
     public static final String PATTERN_YM = "yyyy-MM";
     public static final String PATTERN_YMD = "yyyy-MM-dd";
     public static final String PATTERN_STANDARD = "yyyy-MM-dd HH:mm:ss";
+    public static final String PATTERN_OBLIQUE = "yyyy/MM/dd HH:mm:ss";
     public static final String PATTERN_MILLIS = "yyyy-MM-dd HH:mm:ss:SSS";
+    public static final String[] PATTERN_ARRAY = new String[]{PATTERN_STANDARD, "yyyy/MM/dd HH:mm:ss", PATTERN_YMD, "yyyy/MM/dd", PATTERN_YM, "yyyy-MM", PATTERN_MILLIS, "yyyy/MM/dd HH:mm:ss:SSS"};
 //1、date str transform ---------------------------------------------------------------------------------------------------
 
     /**
@@ -58,12 +60,25 @@ public class DateUtils {
     /**
      * <p>transform str to date </p>
      *
-     * @param timeStr time tring
-     * @return date
-     * @throws ParseException parse date exception
+     * @param timeStr time string
+     * @return date 日期
      */
-    public static Date parse(String timeStr) throws ParseException {
-        return parse(timeStr, PATTERN_STANDARD);
+    public static Date parse(String timeStr) {
+        if (timeStr.indexOf("/") > 0) {
+            try {
+                //数据库处理的优先级高些
+                return parse(timeStr, PATTERN_OBLIQUE);
+            } catch (ParseException e) {
+            }
+        }
+
+        for (String parrern : PATTERN_ARRAY) {
+            try {
+                return parse(timeStr, parrern);
+            } catch (Exception e) {
+            }
+        }
+        return null;
     }
 
     //2、日期获取-------------------------------------------------------------------------------------------------
@@ -71,7 +86,7 @@ public class DateUtils {
     /**
      * <p> get date field</p>
      *
-     * @param date date need
+     * @param date      date need
      * @param dateField date field
      * @return int  filed value
      */
@@ -264,7 +279,7 @@ public class DateUtils {
     /**
      * <p>get  day nums of month  </p>
      *
-     * @param year source year
+     * @param year  source year
      * @param month source month
      * @return day nums of month
      */

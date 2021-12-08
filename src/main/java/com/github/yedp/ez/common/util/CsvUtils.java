@@ -1,16 +1,15 @@
 package com.github.yedp.ez.common.util;
 
-import com.github.yedp.ez.common.annotations.CsvField;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,76 +17,89 @@ import java.util.Map;
 
 public class CsvUtils {
     /**
-     * 读取csv文件  (一次性读取文件不宜过大)
+     * 读取csv文件
      *
-     * @param filePath 文件路径
-     * @param headers  csv列头
-     * @param tClass   返回对象的类型
-     * @param <T>      对象
-     * @return CSVRecord 列表
-     **/
-    public static <T> List<T> readCSV(String filePath, String[] headers, Class<T> tClass) {
-        //创建CSVFormat
-        CSVFormat format = CSVFormat.Builder.create().build().builder().setHeader(headers).build();
-
-        // 获取对象的PropertyDescriptor
-        List<T> tList = new ArrayList<>();
-        try {
-            Map<String, PropertyDescriptor> descriptorMap = CsvUtils.getCsvFieldMapPropertyDescriptor(tClass);
-            FileReader fileReader = new FileReader(filePath);
-            //创建CSVParser对象
-            CSVParser parser = new CSVParser(fileReader, format);
-            try {
-                Map<String, Integer> map = parser.getHeaderMap();
-                for (CSVRecord record : parser) {
-                    T t = tClass.newInstance();
-                    for (Map.Entry<String, Integer> stringIntegerEntry : map.entrySet()) {
-                        if (descriptorMap.containsKey(stringIntegerEntry.getKey()) && record.size() > stringIntegerEntry.getValue()) {
-                            descriptorMap.get(stringIntegerEntry.getKey()).getWriteMethod().invoke(t, record.get(stringIntegerEntry.getValue()));
-                        }
-                    }
-                    tList.add(t);
-                }
-            } finally {
-                parser.close();
-                fileReader.close();
-            }
-        } catch (Exception e) {
-
+     * @param file csv文件
+     * @return 数据map列表
+     * @throws IOException io异常
+     */
+    public static List<Map<String, String>> read(File file) throws IOException {
+        Reader in = new FileReader(file);
+        CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+        if (csvParser == null) {
+            return new ArrayList<>();
         }
+        List<String> headers = csvParser.getHeaderNames();
+        List<CSVRecord> csvRecords = csvParser.getRecords();
+        if (csvRecords == null) {
+            return new ArrayList<>();
+        }
+        List<Map<String, String>> mapList = new ArrayList<>(csvRecords.size());
+        for (CSVRecord record : csvRecords) {
+            Map<String, String> map = new HashMap<>(headers.size());
+            for (String header : headers) {
+                map.put(header, record.get(header));
+            }
+            mapList.add(map);
+        }
+        csvParser.close();
+        in.close();
+        return mapList;
+    }
+
+    /**
+     * 读取Csv到对象列表
+     *
+     * @param file  文件
+     * @param clazz 类
+     * @param <T>   类类型
+     * @return 对象列表
+     * @throws IOException io异常
+     */
+    public static <T> List<T> read(File file, Class<T> clazz) throws IOException {
+        Reader in = new FileReader(file);
+        CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+        if (csvParser == null) {
+            return new ArrayList<>();
+        }
+        List<String> headers = csvParser.getHeaderNames();
+        List<CSVRecord> csvRecords = csvParser.getRecords();
+        if (csvRecords == null) {
+            return new ArrayList<>();
+        }
+        List<T> tList = new ArrayList<>(csvRecords.size());
+        for (CSVRecord record : csvRecords) {
+            T t = null;
+            try {
+                t = clazz.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            for (String header : headers) {
+                String propertyName = StringUtils.lineToHump(header);    // 属性名,驼峰
+                Object value = record.get(header);        // 属性值
+                String setMethodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+                Field field = ClassUtil.getClassField(clazz, propertyName);    //获取和map的key匹配的属性名称
+                if (field == null) {
+                    continue;
+                }
+                Class<?> fieldTypeClass = field.getType();
+                value = ClassUtil.convertValType(value, fieldTypeClass);
+                try {
+                    clazz.getMethod(setMethodName, field.getType()).invoke(t, value);
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    e.printStackTrace();
+                    System.out.println(value);
+                }
+            }
+            tList.add(t);
+        }
+        csvParser.close();
+        in.close();
         return tList;
     }
 
-
-    /**
-     * 获取对应对象中包含CsvCsvField字段的 PropertyDescriptor
-     *
-     * @param tClass 对象的class
-     * @return Map
-     * @throws IntrospectionException 异常
-     * @throws NoSuchFieldException   异常
-     */
-    public static Map<String, PropertyDescriptor> getCsvFieldMapPropertyDescriptor(Class tClass) throws IntrospectionException, NoSuchFieldException {
-        Map<String, PropertyDescriptor> descriptorMap = new HashMap<>();
-        BeanInfo beanInfo = Introspector.getBeanInfo(tClass);
-        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            // 获取该字段赋值过来的  字段名称
-            if (propertyDescriptor.getWriteMethod() == null) {
-                continue;
-            }
-            Field field = tClass.getDeclaredField(propertyDescriptor.getName());
-            CsvField csvField = field.getAnnotation(CsvField.class);
-            if (csvField == null) {
-                continue;
-            }
-            String fieldMetaName = csvField.name();
-            if (StringUtils.isEmpty(fieldMetaName)) {
-                continue;
-            }
-            descriptorMap.put(fieldMetaName, propertyDescriptor);
-        }
-        return descriptorMap;
-    }
 
 }
