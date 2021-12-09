@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,31 +27,34 @@ public class CsvUtils {
     public static List<Map<String, String>> read(File file) throws IOException {
         if (file == null) {
             log.error("file is null");
-            return null;
+            return new ArrayList<>();
         }
         Reader in = new FileReader(file);
-        CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
-        if (csvParser == null) {
-            log.error("csvParser is null");
-            return new ArrayList<>();
-        }
-        List<String> headers = csvParser.getHeaderNames();
-        List<CSVRecord> csvRecords = csvParser.getRecords();
-        if (csvRecords == null) {
-            log.info("csvRecords is null");
-            return new ArrayList<>();
-        }
-        List<Map<String, String>> mapList = new ArrayList<>(csvRecords.size());
-        for (CSVRecord record : csvRecords) {
-            Map<String, String> map = new HashMap<>(headers.size());
-            for (String header : headers) {
-                map.put(header, record.get(header));
+        try {
+            CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+            if (csvParser == null) {
+                log.error("csvParser is null");
+                return new ArrayList<>();
             }
-            mapList.add(map);
+            List<String> headers = csvParser.getHeaderNames();
+            List<CSVRecord> csvRecords = csvParser.getRecords();
+            if (csvRecords == null) {
+                log.info("csvRecords is null");
+                return new ArrayList<>();
+            }
+            List<Map<String, String>> mapList = new ArrayList<>(csvRecords.size());
+            for (CSVRecord record : csvRecords) {
+                Map<String, String> map = new HashMap<>(headers.size());
+                for (String header : headers) {
+                    map.put(header, record.get(header));
+                }
+                mapList.add(map);
+            }
+            csvParser.close();
+            return mapList;
+        } finally {
+            in.close();
         }
-        csvParser.close();
-        in.close();
-        return mapList;
     }
 
     /**
@@ -64,29 +66,40 @@ public class CsvUtils {
      * @return 对象列表
      * @throws IOException io异常
      */
-    public static <T> List<T> read(File file, Class<T> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public static <T> List<T> read(File file, Class<T> clazz) throws IOException {
+        if (file == null) {
+            log.error("file is null");
+            return new ArrayList<>();
+        }
         Reader in = new FileReader(file);
-        CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
-        if (csvParser == null) {
-            return new ArrayList<>();
-        }
-        List<String> headers = csvParser.getHeaderNames();
-        List<CSVRecord> csvRecords = csvParser.getRecords();
-        if (csvRecords == null) {
-            return new ArrayList<>();
-        }
-        List<T> tList = new ArrayList<>(csvRecords.size());
-        for (CSVRecord record : csvRecords) {
-            T t = clazz.newInstance();
-            for (String header : headers) {
-                Object value = record.get(header);        // 属性值
-                ClassUtil.invoke(clazz, t, header, value);
+        try {
+            CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+            if (csvParser == null) {
+                return new ArrayList<>();
             }
-            tList.add(t);
+            List<String> headers = csvParser.getHeaderNames();
+            List<CSVRecord> csvRecords = csvParser.getRecords();
+            if (csvRecords == null) {
+                return new ArrayList<>();
+            }
+            List<T> tList = new ArrayList<>(csvRecords.size());
+            for (CSVRecord record : csvRecords) {
+                try {
+                    T t = clazz.newInstance();
+                    for (String header : headers) {
+                        Object value = record.get(header);        // 属性值
+                        ClassUtil.invoke(clazz, t, header, value);
+                    }
+                    tList.add(t);
+                } catch (Exception e) {
+                    log.error("read exception first column:{}; record:{}; {}", record.get(0), JsonUtil.toJsonString(record), e);
+                }
+            }
+            csvParser.close();
+            return tList;
+        } finally {
+            in.close();
         }
-        csvParser.close();
-        in.close();
-        return tList;
     }
 
 //
@@ -110,12 +123,19 @@ public class CsvUtils {
         } catch (Exception e) {
         } finally {
             try {
+                osw.close();
+            } catch (Exception e) {
+                log.error("osw close exception:{}", e);
+            }
+            try {
                 csvPrinter.close();
             } catch (IOException e) {
+                log.error("csvPrinter close exception:{}", e);
             }
             try {
                 os.close();
             } catch (IOException e) {
+                log.error("os close exception:{}", e);
             }
         }
     }
