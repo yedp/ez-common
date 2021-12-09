@@ -102,13 +102,17 @@ public class CsvUtils {
         }
     }
 
-//
+    //
 //    public static void exportByList(String[] headers, List<List<String>> dataList) throws FileNotFoundException {
 //        FileOutputStream fileos = new FileOutputStream("E:/abc.csv");
 //        exportByList(headers, dataList, fileos);
 //    }
+    public static <T> void export(Class<T> clazz, List<T> dataList, OutputStream os) {
 
-    public static void exportByList(String[] headers, List<List<String>> dataList, OutputStream os) {
+
+    }
+
+    public static void export(String[] headers, List<List<String>> dataList, OutputStream os) {
         OutputStreamWriter osw = null;
         CSVFormat csvFormat = null;
         CSVPrinter csvPrinter = null;

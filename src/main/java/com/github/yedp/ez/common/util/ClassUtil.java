@@ -1,14 +1,20 @@
 package com.github.yedp.ez.common.util;
 
+import com.github.yedp.ez.common.model.resp.QyWxGroupMsg;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.*;
 
 public class ClassUtil {
+    private final static Logger log = LoggerFactory.getLogger(ClassUtil.class);
 
     /**
      * 反射赋值
+     *
      * @param clazz
      * @param t
      * @param propertyName
@@ -84,5 +90,70 @@ public class ClassUtil {
             retVal = value;
         }
         return retVal;
+    }
+
+    /**
+     * 将map的value值转为实体类中字段类型匹配的方法
+     *
+     * @param value
+     * @param fieldTypeClass
+     * @return
+     */
+    public static String toString(Object value, Class<?> fieldTypeClass) {
+        String retVal = null;
+        if (Date.class.getName().equals(fieldTypeClass.getName())) {
+            retVal = DateUtils.format((Date) value);
+        } else {
+            retVal = value.toString();
+        }
+        return retVal;
+    }
+
+    /**
+     * 获取类的声明熟悉值
+     *
+     * @param clazz 类
+     * @return 字段名称
+     */
+    public static List<String> getFieldNameList(Class<?> clazz) {
+        return getFieldNameList(clazz, null);
+    }
+
+    /**
+     * 获取类的声明熟悉值
+     *
+     * @param clazz        类
+     * @param skipFieldSet 需要跳过属性值
+     * @return 字段名称
+     */
+    public static List<String> getFieldNameList(Class<?> clazz, Set<String> skipFieldSet) {
+        List<String> fieldList = new ArrayList<>();
+        Field[] fields = clazz.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            if (skipFieldSet != null && skipFieldSet.contains(fields[i].getName())) {
+                continue;
+            }
+            fieldList.add(fields[i].getName());
+        }
+        return fieldList;
+    }
+
+    public static <T> List<String> getFieldValueList(List<String> fieldNameList, Class<T> clazz, T t) {
+        List<String> valueList = new ArrayList<>();
+        Map<String, String> map = new HashMap<>();
+        Field[] fields = clazz.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            //有的字段是用private修饰的 将他设置为可读
+            fields[i].setAccessible(true);
+            try {
+                map.put(fields[i].getName(), toString(fields[i].get(t), fields[i].getType()));
+            } catch (Exception e) {
+                log.error("getFieldValueList.error: fieldName:{}; error:{}", fields[i].getName(), e);
+            }
+        }
+        for (String fieldName : fieldNameList) {
+            valueList.add(map.get(fieldName));
+        }
+        return valueList;
     }
 }
