@@ -25,7 +25,9 @@ public class ClassUtil {
      * @throws IllegalAccessException
      */
     public static <T> void invoke(Class<T> clazz, T t, String propertyName, Object value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        propertyName = StringUtils.lineToHump(propertyName);    // 属性名,驼峰
+        if (propertyName.indexOf("_") > 0) {
+            propertyName = StringUtils.lineToHump(propertyName);    // 属性名,驼峰
+        }
         String setMethodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         Field field = ClassUtil.getClassField(clazz, propertyName);    //获取和map的key匹配的属性名称
         if (field == null) {
@@ -116,7 +118,9 @@ public class ClassUtil {
      * @return 字段名称
      */
     public static List<String> getFieldNameList(Class<?> clazz) {
-        return getFieldNameList(clazz, null);
+        Set<String> skipFieldSet = new HashSet<>();
+        skipFieldSet.add("serialVersionUID");
+        return getFieldNameList(clazz, skipFieldSet);
     }
 
     /**
@@ -155,5 +159,92 @@ public class ClassUtil {
             valueList.add(map.get(fieldName));
         }
         return valueList;
+    }
+
+    /**
+     * 获取数据字段列表和数据列表
+     *
+     * @param clazz 对象类
+     * @param tList 对象数据列表
+     * @param <T>   对象类型
+     * @return 数据列表
+     */
+    public static <T> FieldDataInfo getFieldValueList(Class<T> clazz, List<T> tList) {
+        Set<String> skipFieldSet = new HashSet<>();
+        skipFieldSet.add("serialVersionUID");
+        return getFieldValueList(clazz, tList, skipFieldSet);
+    }
+
+    /**
+     * 获取数据字段列表和数据列表
+     *
+     * @param clazz        对象类
+     * @param tList        对象数据列表
+     * @param skipFieldSet 需跳过字段
+     * @param <T>          对象类型
+     * @return 数据列表
+     */
+    public static <T> FieldDataInfo getFieldValueList(Class<T> clazz, List<T> tList, Set<String> skipFieldSet) {
+        FieldDataInfo dataList = new FieldDataInfo();
+        Field[] fields = clazz.getDeclaredFields();
+        List<String> fieldNameList = new ArrayList<>();
+        for (int i = 0; i < fields.length; i++) {
+            if (skipFieldSet != null && skipFieldSet.contains(fields[i].getName())) {
+                continue;
+            }
+            fieldNameList.add(fields[i].getName());
+        }
+        dataList.setFieldNameList(fieldNameList);
+        List<List<String>> fieldValueList = new ArrayList<>();
+        for (T t : tList) {
+            List<String> valueList = new ArrayList<>();
+            for (int i = 0; i < fields.length; i++) {
+                //有的字段是用private修饰的 将他设置为可读
+                fields[i].setAccessible(true);
+                if (skipFieldSet != null && skipFieldSet.contains(fields[i].getName())) {
+                    continue;
+                }
+                String value = StringUtils.EMPTY;
+                try {
+                    value = toString(fields[i].get(t), fields[i].getType());
+                } catch (Exception e) {
+                    log.error("getFieldValueList.toString.error fieldName:{}; error:{}", fields[i].getName(), e);
+                }
+                valueList.add(value);
+            }
+            fieldValueList.add(valueList);
+        }
+        dataList.setFieldValueList(fieldValueList);
+        return dataList;
+    }
+
+    /**
+     * 数据列表，用于csv导出用
+     */
+    public static class FieldDataInfo {
+        /**
+         * 字段列表
+         */
+        private List<String> fieldNameList;
+        /**
+         * 对象值列表
+         */
+        private List<List<String>> fieldValueList;
+
+        public List<String> getFieldNameList() {
+            return fieldNameList;
+        }
+
+        public void setFieldNameList(List<String> fieldNameList) {
+            this.fieldNameList = fieldNameList;
+        }
+
+        public List<List<String>> getFieldValueList() {
+            return fieldValueList;
+        }
+
+        public void setFieldValueList(List<List<String>> fieldValueList) {
+            this.fieldValueList = fieldValueList;
+        }
     }
 }
