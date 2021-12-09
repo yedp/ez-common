@@ -1,11 +1,34 @@
 package com.github.yedp.ez.common.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.Date;
 
 public class ClassUtil {
+
+    /**
+     * 反射赋值
+     * @param clazz
+     * @param t
+     * @param propertyName
+     * @param value
+     * @param <T>
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public static <T> void invoke(Class<T> clazz, T t, String propertyName, Object value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        propertyName = StringUtils.lineToHump(propertyName);    // 属性名,驼峰
+        String setMethodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+        Field field = ClassUtil.getClassField(clazz, propertyName);    //获取和map的key匹配的属性名称
+        if (field == null) {
+            return;
+        }
+        Class<?> fieldTypeClass = field.getType();
+        value = convertValType(value, fieldTypeClass);
+        clazz.getMethod(setMethodName, field.getType()).invoke(t, value);
+    }
 
     /**
      * 根据给定对象类匹配对象中的特定字段
@@ -38,7 +61,7 @@ public class ClassUtil {
      * @param fieldTypeClass
      * @return
      */
-    public static Object convertValType(Object value, Class<?> fieldTypeClass)  {
+    public static Object convertValType(Object value, Class<?> fieldTypeClass) {
         Object retVal = null;
 
         if (Long.class.getName().equals(fieldTypeClass.getName())

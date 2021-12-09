@@ -2,20 +2,22 @@ package com.github.yedp.ez.common.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Field;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class CsvUtils {
+    private final static Logger log = LoggerFactory.getLogger(CsvUtils.class);
+
     /**
      * 读取csv文件
      *
@@ -24,14 +26,20 @@ public class CsvUtils {
      * @throws IOException io异常
      */
     public static List<Map<String, String>> read(File file) throws IOException {
+        if (file == null) {
+            log.error("file is null");
+            return null;
+        }
         Reader in = new FileReader(file);
         CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
         if (csvParser == null) {
+            log.error("csvParser is null");
             return new ArrayList<>();
         }
         List<String> headers = csvParser.getHeaderNames();
         List<CSVRecord> csvRecords = csvParser.getRecords();
         if (csvRecords == null) {
+            log.info("csvRecords is null");
             return new ArrayList<>();
         }
         List<Map<String, String>> mapList = new ArrayList<>(csvRecords.size());
@@ -56,7 +64,7 @@ public class CsvUtils {
      * @return 对象列表
      * @throws IOException io异常
      */
-    public static <T> List<T> read(File file, Class<T> clazz) throws IOException {
+    public static <T> List<T> read(File file, Class<T> clazz) throws IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         Reader in = new FileReader(file);
         CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
         if (csvParser == null) {
@@ -69,36 +77,47 @@ public class CsvUtils {
         }
         List<T> tList = new ArrayList<>(csvRecords.size());
         for (CSVRecord record : csvRecords) {
-            T t = null;
-            try {
-                t = clazz.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            T t = clazz.newInstance();
             for (String header : headers) {
-                String propertyName = StringUtils.lineToHump(header);    // 属性名,驼峰
                 Object value = record.get(header);        // 属性值
-                String setMethodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-                Field field = ClassUtil.getClassField(clazz, propertyName);    //获取和map的key匹配的属性名称
-                if (field == null) {
-                    continue;
-                }
-                Class<?> fieldTypeClass = field.getType();
-                value = ClassUtil.convertValType(value, fieldTypeClass);
-                try {
-                    clazz.getMethod(setMethodName, field.getType()).invoke(t, value);
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    e.printStackTrace();
-                    System.out.println(value);
-                }
+                ClassUtil.invoke(clazz, t, header, value);
             }
             tList.add(t);
         }
         csvParser.close();
         in.close();
         return tList;
+    }
+
+//
+//    public static void exportByList(String[] headers, List<List<String>> dataList) throws FileNotFoundException {
+//        FileOutputStream fileos = new FileOutputStream("E:/abc.csv");
+//        exportByList(headers, dataList, fileos);
+//    }
+
+    public static void exportByList(String[] headers, List<List<String>> dataList, OutputStream os) {
+        OutputStreamWriter osw = null;
+        CSVFormat csvFormat = null;
+        CSVPrinter csvPrinter = null;
+        try {
+            osw = new OutputStreamWriter(os, "GBK");//如果是UTF-8时，WPS打开是正常显示，而微软的excel打开是乱码,
+            csvFormat = CSVFormat.DEFAULT.withHeader(headers);
+            csvPrinter = new CSVPrinter(osw, csvFormat);
+            for (int i = 0; i < dataList.size(); i++) {
+                List<String> values = dataList.get(i);
+                csvPrinter.printRecord(values);
+            }
+        } catch (Exception e) {
+        } finally {
+            try {
+                csvPrinter.close();
+            } catch (IOException e) {
+            }
+            try {
+                os.close();
+            } catch (IOException e) {
+            }
+        }
     }
 
 
