@@ -118,10 +118,11 @@ public class CsvUtils {
     /**
      * 导出对象列表数据
      *
-     * @param clazz    对象类
-     * @param dataList 数据列表
-     * @param os       输出流
-     * @param <T>      对象类型
+     * @param clazz        对象类
+     * @param dataList     数据列表
+     * @param os           输出流
+     * @param <T>          对象类型
+     * @param charsetNames 编码类型
      */
     public static <T> void export(Class<T> clazz, List<T> dataList, OutputStream os, String charsetNames) {
         ClassUtil.FieldDataInfo fieldDataInfo = ClassUtil.getFieldValueList(clazz, dataList);
@@ -142,9 +143,10 @@ public class CsvUtils {
     /**
      * 都差数据列表
      *
-     * @param headers  数据头
-     * @param dataList 数据列表
-     * @param os       输出流
+     * @param headers      数据头
+     * @param dataList     数据列表
+     * @param os           输出流
+     * @param charsetNames 编码类型
      */
     public static void export(String[] headers, List<List<String>> dataList, OutputStream os, String charsetNames) {
         OutputStreamWriter osw = null;

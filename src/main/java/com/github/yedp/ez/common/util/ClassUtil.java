@@ -15,14 +15,14 @@ public class ClassUtil {
     /**
      * 反射赋值
      *
-     * @param clazz
-     * @param t
-     * @param propertyName
-     * @param value
-     * @param <T>
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+     * @param clazz 对象类
+     * @param t 对象
+     * @param propertyName 字段名称
+     * @param value 字段值
+     * @param <T> 对象类型
+     * @throws NoSuchMethodException 异常
+     * @throws InvocationTargetException 异常
+     * @throws IllegalAccessException 异常
      */
     public static <T> void invoke(Class<T> clazz, T t, String propertyName, Object value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (propertyName.indexOf("_") > 0) {
@@ -43,7 +43,7 @@ public class ClassUtil {
      *
      * @param clazz     类
      * @param fieldName 字段名称
-     * @return
+     * @return 返回字段
      */
     public static Field getClassField(Class<?> clazz, String fieldName) {
         if (Object.class.getName().equals(clazz.getName())) {
@@ -65,9 +65,9 @@ public class ClassUtil {
     /**
      * 将map的value值转为实体类中字段类型匹配的方法
      *
-     * @param value
-     * @param fieldTypeClass
-     * @return
+     * @param value 值
+     * @param fieldTypeClass 字段类型
+     * @return 转换后的值
      */
     public static Object convertValType(Object value, Class<?> fieldTypeClass) {
         Object retVal = null;
@@ -97,9 +97,9 @@ public class ClassUtil {
     /**
      * 将map的value值转为实体类中字段类型匹配的方法
      *
-     * @param value
-     * @param fieldTypeClass
-     * @return
+     * @param value 值
+     * @param fieldTypeClass 类型
+     * @return 转换后的值
      */
     public static String toString(Object value, Class<?> fieldTypeClass) {
         String retVal = null;
