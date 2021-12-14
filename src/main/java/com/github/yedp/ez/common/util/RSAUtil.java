@@ -72,8 +72,8 @@ public class RSAUtil {
      *
      * @param encryptedData 数据（字节数组）
      * @param privateKey    私钥
-     * @return
-     * @throws Exception
+     * @return 解密数据
+     * @throws Exception 解密异常
      */
     public static byte[] decrypt(byte[] encryptedData, byte[] privateKey) throws Exception {
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(privateKey);
@@ -115,7 +115,7 @@ public class RSAUtil {
      * @param param      数据
      * @param privateKey 私钥
      * @return 返回签名数据
-     * @throws Exception
+     * @throws Exception 签名异常
      */
     public static String sign(String param, String privateKey) throws Exception {
         byte[] data = param.getBytes(StandardCharsets.UTF_8);
@@ -130,7 +130,7 @@ public class RSAUtil {
      * @param param      数据（字节数组）
      * @param privateKey 私钥
      * @return 返回签名数据
-     * @throws Exception
+     * @throws Exception 签名异常
      */
     public static byte[] sign(byte[] param, byte[] privateKey) throws Exception {
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(privateKey);
@@ -182,7 +182,7 @@ public class RSAUtil {
      * 生成公私钥对
      *
      * @return 公私钥
-     * @throws NoSuchAlgorithmException
+     * @throws NoSuchAlgorithmException 异常
      */
     public static Map<String, String> genKeyPair() throws NoSuchAlgorithmException {
         // KeyPairGenerator类用于生成公钥和私钥对，基于RSA算法生成对象
