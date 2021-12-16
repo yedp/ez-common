@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Author: yedp
+ * @author yedp
  * Date: 2018/12/29 14:33
  * 签名SHA1实现
  */
