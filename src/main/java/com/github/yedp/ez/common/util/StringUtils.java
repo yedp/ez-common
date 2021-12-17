@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -313,6 +316,14 @@ public class StringUtils {
         try {
             if (object instanceof Date) {
                 return DateUtils.format((Date) object);
+            }
+            if (object instanceof LocalDateTime) {
+                LocalDateTime localDateTime = (LocalDateTime) object;
+                return DateUtils.format(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+            }
+            if (object instanceof LocalDate) {
+                LocalDate localDateTime = (LocalDate) object;
+                return DateUtils.format(Date.from(localDateTime.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
             }
             if (object instanceof byte[]) {
                 return bytesToStr((byte[]) object);

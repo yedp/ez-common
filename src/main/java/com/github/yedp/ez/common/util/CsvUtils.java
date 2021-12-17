@@ -122,11 +122,11 @@ public class CsvUtils {
      * @param dataList     数据列表
      * @param os           输出流
      * @param <T>          对象类型
-     * @param charsetNames 编码类型
+     * @param charsetName 编码类型
      */
-    public static <T> void export(Class<T> clazz, List<T> dataList, OutputStream os, String charsetNames) {
+    public static <T> void export(Class<T> clazz, List<T> dataList, OutputStream os, String charsetName) {
         ClassUtil.FieldDataInfo fieldDataInfo = ClassUtil.getFieldValueList(clazz, dataList);
-        export(fieldDataInfo.getFieldNameList().toArray(new String[0]), fieldDataInfo.getFieldValueList(), os, charsetNames);
+        export(fieldDataInfo.getFieldNameList().toArray(new String[0]), fieldDataInfo.getFieldValueList(), os, charsetName);
     }
 
     /**
@@ -146,14 +146,14 @@ public class CsvUtils {
      * @param headers      数据头
      * @param dataList     数据列表
      * @param os           输出流
-     * @param charsetNames 编码类型
+     * @param charsetName 编码类型
      */
-    public static void export(String[] headers, List<List<String>> dataList, OutputStream os, String charsetNames) {
+    public static void export(String[] headers, List<List<String>> dataList, OutputStream os, String charsetName) {
         OutputStreamWriter osw = null;
         CSVFormat csvFormat = null;
         CSVPrinter csvPrinter = null;
         try {
-            osw = new OutputStreamWriter(os, charsetNames);//如果是UTF-8时，WPS打开是正常显示，而微软的excel打开是乱码,
+            osw = new OutputStreamWriter(os, charsetName);//如果是UTF-8时，WPS打开是正常显示，而微软的excel打开是乱码,
             csvFormat = CSVFormat.DEFAULT.withHeader(headers);
             csvPrinter = new CSVPrinter(osw, csvFormat);
             for (int i = 0; i < dataList.size(); i++) {
