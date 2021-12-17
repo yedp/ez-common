@@ -1,7 +1,11 @@
 package com.github.yedp.ez.common.codec;
 
+import com.github.yedp.ez.common.model.req.QyWxNewsReq;
 import com.github.yedp.ez.common.util.StringUtils;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class StringUtilsTest {
     //☺
@@ -15,5 +19,16 @@ public class StringUtilsTest {
         System.out.println(StringUtils.removeEmojis("🍑ab\uD83D\uDE00"));
         System.out.println(StringUtils.removeEmojis(""));
         System.out.println(StringUtils.removeEmojis(null));
+    }
+    @Test
+    public void testToString(){
+        System.out.println(StringUtils.toString(100));
+        System.out.println(StringUtils.toString(new Double(100)));
+        System.out.println(StringUtils.toString(new Float(100)));
+        System.out.println(StringUtils.toString(new BigDecimal(100)));
+        System.out.println(StringUtils.toString("String"));
+        System.out.println(StringUtils.toString(new Date()));
+        System.out.println(StringUtils.toString(new QyWxNewsReq()));
+
     }
 }

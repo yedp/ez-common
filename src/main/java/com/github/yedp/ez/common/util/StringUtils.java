@@ -1,16 +1,22 @@
 package com.github.yedp.ez.common.util;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author yedp
  * date 2021-01-30 17:30:07
- *
  **/
 public class StringUtils {
+    private final static Logger log = LoggerFactory.getLogger(StringUtils.class);
+
     private static final String CHARSET = "UTF-8";
     public static final String SPACE = " ";
     public static final String EMPTY = "";
@@ -220,7 +226,6 @@ public class StringUtils {
     }
 
 
-
     public static byte[] strToBytes(String data) throws UnsupportedEncodingException {
         return strToBytes(data, CHARSET);
     }
@@ -293,5 +298,32 @@ public class StringUtils {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    /**
+     * 对象转成字符串
+     *
+     * @param object 对象
+     * @return 字符串
+     */
+    public static String toString(Object object) {
+        if (object == null) {
+            return EMPTY;
+        }
+        try {
+            if (object instanceof Date) {
+                return DateUtils.format((Date) object);
+            }
+            if (object instanceof byte[]) {
+                return bytesToStr((byte[]) object);
+            }
+            if (object instanceof String || object instanceof Integer || object instanceof Double || object instanceof Float || object instanceof BigDecimal || object instanceof Character) {
+                return String.valueOf(object);
+            }
+            return JsonUtil.toJsonString(object);
+        } catch (Exception e) {
+            log.error("toString", object, e);
+        }
+        return String.valueOf(object);
     }
 }
