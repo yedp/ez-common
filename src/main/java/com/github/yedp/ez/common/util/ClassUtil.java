@@ -1,6 +1,5 @@
 package com.github.yedp.ez.common.util;
 
-import com.github.yedp.ez.common.model.resp.QyWxGroupMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

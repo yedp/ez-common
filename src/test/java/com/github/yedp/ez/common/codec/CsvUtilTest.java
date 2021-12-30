@@ -1,9 +1,7 @@
 package com.github.yedp.ez.common.codec;
-import java.util.Date;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.yedp.ez.common.model.resp.QyWxGroupMsg;
-import com.github.yedp.ez.common.util.ClassUtil;
+import com.github.yedp.ez.common.codec.vo.QyWxGroupMsg;
 import com.github.yedp.ez.common.util.CsvUtils;
 import com.github.yedp.ez.common.util.JsonUtil;
 import org.junit.Test;
@@ -13,11 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class CsvUtilTest {
     private final static Logger log = LoggerFactory.getLogger(CsvUtilTest.class);

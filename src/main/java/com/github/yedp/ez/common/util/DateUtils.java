@@ -1,5 +1,11 @@
 package com.github.yedp.ez.common.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.TriggerContext;
+import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.scheduling.support.SimpleTriggerContext;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -9,6 +15,8 @@ import java.util.*;
  * <p> date utils</p>
  */
 public class DateUtils {
+    private final static Logger log = LoggerFactory.getLogger(DateUtils.class);
+
     public static final String PATTERN_YM = "yyyy-MM";
     public static final String PATTERN_YMD = "yyyy-MM-dd";
     public static final String PATTERN_STANDARD = "yyyy-MM-dd HH:mm:ss";
@@ -457,5 +465,26 @@ public class DateUtils {
 
     public static int yearDiff(Date beginTime, Date endTime) {
         return getYear(endTime) - getYear(beginTime);
+    }
+
+    /**
+     * 通过时间表达式获取下次执行时间
+     *
+     * @param cron
+     * @return
+     */
+    public static Date nextDate(String cron) {
+        if (StringUtils.isBlank(cron)) {
+            return null;
+        }
+        try {
+            TriggerContext triggerContext = new SimpleTriggerContext();
+            CronTrigger cronTrigger = new CronTrigger(cron);
+            Date sendTime = cronTrigger.nextExecutionTime(triggerContext);
+            return sendTime;
+        } catch (Exception e) {
+            log.error("nextDate,cron:{}; e:{}", cron, e);
+            return null;
+        }
     }
 }

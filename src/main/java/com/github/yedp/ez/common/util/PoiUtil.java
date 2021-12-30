@@ -15,77 +15,77 @@ import java.util.*;
 
 public class PoiUtil {
     /**
-     * @2003-2007格式
+     * 2003-2007格式
      */
     public static final String FILE_EXTENSION_XLS = "xls";
 
     /**
-     * @2007以上格式
+     * 2007以上格式
      */
     public static final String FILE_EXTENSION_XLSX = "xlsx";
 
     /**
-     * @表头行样式
+     * 表头行样式
      */
     private static CellStyle headStyle;
 
     /**
-     * @页脚样式
+     * @@页脚样式
      */
     private static CellStyle footStyle;
 
     /**
-     * @页脚样式
+     * 页脚样式
      */
     private static CellStyle negFootStyle;
 
     /**
-     * @表头行字体
+     * 表头行字体
      */
     private static Font headFont;
 
     /**
-     * @页脚字体
+     * 页脚字体
      */
     private static Font footFont;
 
     /**
-     * @页脚字体
+     * 页脚字体
      */
     private static Font footFontRed;
 
     /**
-     * @内容行样式
+     * 内容行样式
      */
     private static CellStyle contentStyle;
 
     /**
-     * @数字内容字体
+     * 数字内容字体
      */
     private static CellStyle numberStyle;
 
     /**
-     * @负数-数字内容字体
+     * 负数-数字内容字体
      */
     private static CellStyle negNumberStyle;
 
     /**
-     * @数据格式
+     * 数据格式
      */
     private static DataFormat dataFormat;
 
     /**
-     * @百分比格式
+     * 百分比格式
      */
     private static CellStyle percentStyle;
 
     /**
-     * @内容行字体
+     * 内容行字体
      */
     private static Font contentFont;
 
     /**
-     * @内容行字体
+     * 内容行字体
      */
     private static Font contentFontRed;
 
@@ -97,7 +97,7 @@ public class PoiUtil {
      * @param type 格式类型
      * @param <T>  t
      * @return Excel
-     * @生成xls workbook.
+     * 生成xls workbook.
      */
     public static <T> Workbook excelExport(Map<String, Object> maps, List<T> list, String type) {
         List<String> dateFields = new ArrayList<String>();
@@ -113,7 +113,7 @@ public class PoiUtil {
      * @param dateFields 日期列
      * @param numFields  汇总列
      * @return workbook
-     * @生成xls workbook
+     * 生成xls workbook
      */
     public static <T> Workbook excelExport(Map<String, Object> maps, List<T> list, String type, List<String> dateFields,
                                            List<String> numFields) {
@@ -130,7 +130,7 @@ public class PoiUtil {
      * @param numFields     汇总列
      * @param percentFields 百分比格式列
      * @return workbook
-     * @生成xls workbook
+     * 生成xls workbook
      */
     public static <T> Workbook excelExport(Map<String, Object> maps, List<T> list, String type, List<String> dateFields,
                                            List<String> numFields, List<String> percentFields) {
@@ -350,7 +350,7 @@ public class PoiUtil {
      * @param file 文件
      * @param <T>  泛型
      * @return 是否成功
-     * @导出工具类
+     * 导出工具类
      */
     public static <T> boolean excelExport(Map<String, Object> maps, List<T> list, File file) {
         try {
@@ -395,7 +395,7 @@ public class PoiUtil {
 
     /**
      * @param wb workbook
-     * @初始化.
+     * 初始化.
      */
     private static void initWorkbook(Workbook wb) {
 
@@ -423,7 +423,7 @@ public class PoiUtil {
      * @param createHelper 工具
      * @param sheet        sheet
      * @param wb           workbook
-     * @填充标题.
+     * 填充标题.
      */
     private static void fillTitle(Map<String, Object> maps, CreationHelper createHelper, Sheet sheet, Workbook wb) {
         if (maps.containsKey("_TITLE_")) {
@@ -444,7 +444,7 @@ public class PoiUtil {
      * @param sheet        sheet
      * @param wb           工作薄s
      * @return fields
-     * @填充表头.
+     * 填充表头.
      */
     private static List<String> fillHeader(Map<String, Object> maps, CreationHelper createHelper, Set<String> sets,
                                            Sheet sheet, Workbook wb) {
@@ -517,7 +517,7 @@ public class PoiUtil {
     /**
      * @param sheet  sheet
      * @param fields 字段
-     * @调整列宽
+     * 调整列宽
      */
     private static void adjustWidth(Sheet sheet, List<String> fields) {
         int i = 0;
@@ -545,7 +545,7 @@ public class PoiUtil {
     }
 
     /**
-     * @Description: 初始化表头行字体
+     * Description: 初始化表头行字体
      */
     private static void initHeadFont() {
         headFont.setFontName("Arial");
@@ -584,7 +584,7 @@ public class PoiUtil {
     }
 
     /**
-     * @Description: 初始化内容行样式
+     * Description: 初始化内容行样式
      */
     private static void initContentCellStyle() {
         contentStyle.setAlignment(HorizontalAlignment.CENTER);

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * @author yedp
  * date 2021-01-30 17:30:07
  **/
-public class StringUtils {
+public class StringUtils extends org.springframework.util.StringUtils {
     private final static Logger log = LoggerFactory.getLogger(StringUtils.class);
 
     private static final String CHARSET = "UTF-8";
@@ -336,5 +336,23 @@ public class StringUtils {
             log.error("toString", object, e);
         }
         return String.valueOf(object);
+    }
+
+    /**
+     *  字符串转double
+     * @param str
+     * @return double
+     */
+    public static double parseDouble(String str) {
+        if (isEmpty(str)) {
+            return 0;
+        }
+
+        try {
+            return Double.parseDouble(str);
+        } catch (Exception ex) {
+            log.error("parseDouble.error: str:{} ; error:{}," , str, ex);
+        }
+        return 0;
     }
 }

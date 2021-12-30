@@ -1,7 +1,7 @@
 package com.github.yedp.ez.common.codec;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.yedp.ez.common.model.resp.QyWxGroupMsg;
+import com.github.yedp.ez.common.codec.vo.QyWxGroupMsg;
 import com.github.yedp.ez.common.util.JsonUtil;
 import com.github.yedp.ez.common.util.PoiUtil;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

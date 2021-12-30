@@ -1,4 +1,4 @@
-package com.github.yedp.ez.common.model.resp;
+package com.github.yedp.ez.common.codec.vo;
 
 import java.io.Serializable;
 import java.util.Date;

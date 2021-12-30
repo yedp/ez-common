@@ -7,10 +7,10 @@
 
     <groupId>com.github.yedp</groupId>
     <artifactId>ez-common</artifactId>
-    <version>1.0.4-release</version>
+    <version>1.0.5-release</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gpg.executable>D:\Program\GnuPG\bin\gpg</gpg.executable>
+        <gpg.executable>D:\program\GnuPG\bin\gpg</gpg.executable>
         <slf4j.version>1.7.32</slf4j.version>
         <log4j.version>2.16.0</log4j.version>
         <jackson.version>2.13.0</jackson.version>
@@ -19,8 +19,24 @@
         <lmax.disruptor.version>3.2.0</lmax.disruptor.version>
         <poi.version>5.1.0</poi.version>
         <junit.version>4.12</junit.version>
+        <spring.version>5.3.4</spring.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
