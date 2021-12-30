@@ -19,7 +19,9 @@ public class CollectionUtils extends org.springframework.util.CollectionUtils {
      *
      * @param list  参数
      * @param clazz 目标类型
-     * @return java.util.List<R>
+     * @param <T> 原对象类型
+     * @param <R> 转换后对象类型
+     * @return java.util.List
      **/
     public static <T, R> List<R> convertList(List<T> list, Class<R> clazz) {
         return isEmpty(list) ? new ArrayList<>() : convertList(list, clazz, null);
@@ -30,8 +32,10 @@ public class CollectionUtils extends org.springframework.util.CollectionUtils {
      *
      * @param list      参数
      * @param clazz     目标类型
+     * @param <T> 原对象类型
+     * @param <R> 转换后对象类型
      * @param predicate 回调函数
-     * @return java.util.List<R>
+     * @return java.util.List
      **/
     public static <T, R> List<R> convertList(List<T> list, Class<R> clazz, BiPredicate<T, R> predicate) {
         if (isEmpty(list)) {

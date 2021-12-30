@@ -11,10 +11,10 @@ public class DistanceUtil {
     /**
      * 通过经纬度获取距离(单位：米)
      *
-     * @param lat1
-     * @param lng1
-     * @param lat2
-     * @param lng2
+     * @param lat1 维度1
+     * @param lng1 经度1
+     * @param lat2 维度2
+     * @param lng2 经度2
      * @return 距离（单位：m）
      */
     public static int getDistance(double lat1, double lng1, double lat2, double lng2) {
@@ -38,10 +38,10 @@ public class DistanceUtil {
     /**
      * 经纬度接收的为String类型时
      *
-     * @param lat1
-     * @param lng1
-     * @param lat2
-     * @param lng2
+     * @param lat1 维度1
+     * @param lng1 经度1
+     * @param lat2 维度2
+     * @param lng2 经度2
      * @return 距离（单位：m）
      */
     public static int getDistanceByStr(String lat1, String lng1, String lat2, String lng2) {

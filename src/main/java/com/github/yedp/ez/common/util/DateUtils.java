@@ -470,8 +470,8 @@ public class DateUtils {
     /**
      * 通过时间表达式获取下次执行时间
      *
-     * @param cron
-     * @return
+     * @param cron 时间cron表达式
+     * @return 下次执行时间
      */
     public static Date nextDate(String cron) {
         if (StringUtils.isBlank(cron)) {

@@ -340,7 +340,7 @@ public class StringUtils extends org.springframework.util.StringUtils {
 
     /**
      *  字符串转double
-     * @param str
+     * @param str 字符串
      * @return double
      */
     public static double parseDouble(String str) {
