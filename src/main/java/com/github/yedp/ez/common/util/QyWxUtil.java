@@ -28,7 +28,7 @@ public class QyWxUtil {
     public static RetObj uploadFile(String groupId, File file) throws IOException {
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         multipartEntityBuilder.addBinaryBody("file", file);
-        String res = HttpUtil.ReturnPostBody(UPLOAD_URL.concat(groupId), multipartEntityBuilder.build());
+        String res = HttpUtil.returnPostBody(UPLOAD_URL.concat(groupId), multipartEntityBuilder.build());
         if (StringUtils.isEmpty(res)) {
             return RetObj.error("上传失败");
         }
@@ -52,7 +52,7 @@ public class QyWxUtil {
      */
     public static RetObj sendFile(String groupId, String fileId) throws IOException {
         QyWxFileReq req = new QyWxFileReq(fileId);
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 
@@ -67,7 +67,7 @@ public class QyWxUtil {
      */
     public static RetObj sendMsg(String groupId, String msg) throws IOException {
         QyWxTextReq req = new QyWxTextReq(msg);
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 
@@ -82,7 +82,7 @@ public class QyWxUtil {
      */
     public static RetObj sendMsg(String groupId, String msg, List<String> mentionedPhoneList) throws IOException {
         QyWxTextReq req = new QyWxTextReq(msg, mentionedPhoneList);
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 
@@ -97,7 +97,7 @@ public class QyWxUtil {
      */
     public static RetObj sendMsgMarkdown(String groupId, String msg) throws IOException {
         QyWxMarkdownReq req = new QyWxMarkdownReq(msg);
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 
@@ -112,7 +112,7 @@ public class QyWxUtil {
      */
     public static RetObj sendImage(String groupId, String base64, String md5) throws IOException {
         QyWxImageReq req = new QyWxImageReq(base64, md5);
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 
@@ -126,7 +126,7 @@ public class QyWxUtil {
      */
     public static RetObj sendImage(String groupId, File file) throws IOException {
         QyWxImageReq req = new QyWxImageReq(FileUtil.toBase64(file), FileUtil.toMd5(file));
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 
@@ -179,7 +179,7 @@ public class QyWxUtil {
         newsInfo.setArticles(articlesInfos);
 
         QyWxNewsReq req = new QyWxNewsReq(newsInfo);
-        String res = HttpUtil.ReturnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
+        String res = HttpUtil.returnPostBody(SEND_URL.concat(groupId), JsonUtil.toJsonString(req));
         return parseRetObj(res);
     }
 

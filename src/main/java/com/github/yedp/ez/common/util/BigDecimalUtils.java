@@ -22,7 +22,7 @@ public class BigDecimalUtils {
      *
      * @param salePrice   售价
      * @param originPrice 原价
-     * @return
+     * @return 折扣str
      */
     public static String calculateDiscount(Integer salePrice, Integer originPrice) {
         if(salePrice==null ||originPrice==null){
