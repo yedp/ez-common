@@ -43,16 +43,16 @@ public class HttpUtil {
                 .build();
     }
 
-    public static <T> T ReturnPostObj(String url, String body, Class<T> valueType) throws IOException {
-        String str = ReturnPostBody(url, body, "application/json");
+    public static <T> T returnPostObj(String url, String body, Class<T> valueType) throws IOException {
+        String str = returnPostBody(url, body, "application/json");
         return JsonUtil.readValue(str, valueType);
     }
 
-    public static String ReturnPostBody(String url, String body) throws IOException {
-        return ReturnPostBody(url, body, "application/json");
+    public static String returnPostBody(String url, String body) throws IOException {
+        return returnPostBody(url, body, "application/json");
     }
 
-    public static String ReturnPostBody(String url, String body, String contentType) throws IOException {
+    public static String returnPostBody(String url, String body, String contentType) throws IOException {
         StringEntity entity = null;
 
         if (StringUtils.isNotEmpty(body)) {
@@ -61,18 +61,18 @@ public class HttpUtil {
             entity.setContentType(contentType);
         }
 
-        return ReturnPostBody(url, entity, "UTF-8");
+        return returnPostBody(url, entity, "UTF-8");
     }
 
-    public static String ReturnPostBody(String url, HttpEntity entity) throws IOException {
-        return ReturnPostBody(url, entity, "UTF-8");
+    public static String returnPostBody(String url, HttpEntity entity) throws IOException {
+        return returnPostBody(url, entity, "UTF-8");
     }
 
-    private static String ReturnPostBody(String url, HttpEntity entity, String responseCharset) throws IOException {
-        return ReturnPostBody(url, entity, responseCharset, null);
+    private static String returnPostBody(String url, HttpEntity entity, String responseCharset) throws IOException {
+        return returnPostBody(url, entity, responseCharset, null);
     }
 
-    private static String ReturnPostBody(String url, HttpEntity entity, String responseCharset, Map<String, String> headers) throws IOException {
+    private static String returnPostBody(String url, HttpEntity entity, String responseCharset, Map<String, String> headers) throws IOException {
         HttpPost post = new HttpPost(url);
         if (entity != null) {
             post.setEntity(entity);
@@ -85,7 +85,7 @@ public class HttpUtil {
         return EntityUtils.toString(responseEntity, responseCharset);
     }
 
-    public static BufferedImage ReturnPostBodyImage(String url, String body) throws IOException {
+    public static BufferedImage returnPostBodyImage(String url, String body) throws IOException {
         StringEntity entity = null;
         if (StringUtils.isNotEmpty(body)) {
             entity = new StringEntity(body, "UTF-8");
@@ -105,11 +105,11 @@ public class HttpUtil {
 
     }
 
-    public static String ReturnPostBody(String url, HttpEntity entity, Map<String, String> headers) throws IOException {
-        return ReturnPostBody(url, entity, "UTF-8", headers);
+    public static String returnPostBody(String url, HttpEntity entity, Map<String, String> headers) throws IOException {
+        return returnPostBody(url, entity, "UTF-8", headers);
     }
 
-    public static String ReturnPostBody(String url, HttpEntity entity, Map<String, String> headers, int timeout) throws IOException {
+    public static String returnPostBody(String url, HttpEntity entity, Map<String, String> headers, int timeout) throws IOException {
         HttpPost post = new HttpPost(url);
         if (entity != null) {
             post.setEntity(entity);
@@ -124,7 +124,7 @@ public class HttpUtil {
         return EntityUtils.toString(responseEntity, "UTF-8");
     }
 
-    public static String ReturnGetBody(String url) throws IOException {
+    public static String returnGetBody(String url) throws IOException {
         HttpGet httpGet = new HttpGet(url);
         HttpResponse httpresponse = getHttpClient().execute(httpGet);
         HttpEntity entity = httpresponse.getEntity();
