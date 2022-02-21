@@ -1,15 +1,17 @@
 package com.github.yedp.ez.common.util;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-public class CollectionUtils extends org.springframework.util.CollectionUtils {
+public class CollectionUtil extends CollectionUtils {
     public static boolean isNotEmpty(Collection<?> collection) {
         return !isEmpty(collection);
     }
+
     public static boolean isNotEmpty(Map<?, ?> map) {
         return !isEmpty(map);
     }
@@ -19,8 +21,8 @@ public class CollectionUtils extends org.springframework.util.CollectionUtils {
      *
      * @param list  参数
      * @param clazz 目标类型
-     * @param <T> 原对象类型
-     * @param <R> 转换后对象类型
+     * @param <T>   原对象类型
+     * @param <R>   转换后对象类型
      * @return java.util.List
      **/
     public static <T, R> List<R> convertList(List<T> list, Class<R> clazz) {
@@ -32,8 +34,8 @@ public class CollectionUtils extends org.springframework.util.CollectionUtils {
      *
      * @param list      参数
      * @param clazz     目标类型
-     * @param <T> 原对象类型
-     * @param <R> 转换后对象类型
+     * @param <T>       原对象类型
+     * @param <R>       转换后对象类型
      * @param predicate 回调函数
      * @return java.util.List
      **/

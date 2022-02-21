@@ -7,11 +7,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 public class JsonUtil {
+    private final static Logger log = LoggerFactory.getLogger(JsonUtil.class);
+
     private static ObjectMapper objectMapper = new ObjectMapper();
     // 日起格式化
     private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -36,14 +40,18 @@ public class JsonUtil {
      * @param obj 对象
      * @param <T> 对象
      * @return 对象字符串
-     * @throws JsonProcessingException 异常
      */
 
-    public static <T> String toJsonString(T obj) throws JsonProcessingException {
+    public static <T> String toJsonString(T obj)  {
         if (obj == null) {
             return null;
         }
-        return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
+        try {
+            return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error("toJsonString.error {}",e);
+            return null;
+        }
     }
 
     /**
@@ -52,13 +60,17 @@ public class JsonUtil {
      * @param obj 对象
      * @param <T> 对象
      * @return 对象字符串
-     * @throws JsonProcessingException 异常
      */
-    public static <T> String toJsonStringPretty(T obj) throws JsonProcessingException {
+    public static <T> String toJsonStringPretty(T obj) {
         if (obj == null) {
             return null;
         }
-        return obj instanceof String ? (String) obj : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        try {
+            return obj instanceof String ? (String) obj : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            log.error("toJsonStringPretty.error {}",e);
+            return null;
+        }
     }
 
     /**
@@ -68,13 +80,17 @@ public class JsonUtil {
      * @param <T>   对象
      * @param clazz 自定义对象的class对象
      * @return 自定义对象
-     * @throws IOException 异常
      */
-    public static <T> T readValue(String str, Class<T> clazz) throws IOException {
+    public static <T> T readValue(String str, Class<T> clazz)  {
         if (StringUtils.isEmpty(str) || clazz == null) {
             return null;
         }
-        return clazz.equals(String.class) ? (T) str : objectMapper.readValue(str, clazz);
+        try {
+            return clazz.equals(String.class) ? (T) str : objectMapper.readValue(str, clazz);
+        } catch (JsonProcessingException e) {
+            log.error("readValue.error {}",e);
+            return null;
+        }
     }
 
     /**
@@ -84,13 +100,17 @@ public class JsonUtil {
      * @param typeReference 类型
      * @param <T>           对象
      * @return 对象
-     * @throws IOException 异常
      */
-    public static <T> T readValue(String str, TypeReference<T> typeReference) throws IOException {
+    public static <T> T readValue(String str, TypeReference<T> typeReference)  {
         if (StringUtils.isEmpty(str) || typeReference == null) {
             return null;
         }
-        return (T) (typeReference.getType().equals(String.class) ? str : objectMapper.readValue(str, typeReference));
+        try {
+            return (T) (typeReference.getType().equals(String.class) ? str : objectMapper.readValue(str, typeReference));
+        } catch (JsonProcessingException e) {
+            log.error("readValue.error {}",e);
+            return null;
+        }
     }
 
     /**
@@ -101,10 +121,14 @@ public class JsonUtil {
      * @param elementClazzes  元素类型
      * @param <T>             对象
      * @return 集合对象
-     * @throws IOException 异常
      */
-    public static <T> T readValue(String str, Class<?> collectionClazz, Class<?>... elementClazzes) throws IOException {
+    public static <T> T readValue(String str, Class<?> collectionClazz, Class<?>... elementClazzes) {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(collectionClazz, elementClazzes);
-        return objectMapper.readValue(str, javaType);
+        try {
+            return objectMapper.readValue(str, javaType);
+        } catch (JsonProcessingException e) {
+            log.error("readValue.error {}",e);
+            return null;
+        }
     }
 }

@@ -17,4 +17,18 @@ public class BigDecimalUtils {
         return dividend.divide(divisor, scale, BigDecimal.ROUND_DOWN);
     }
 
+    /**
+     * 计算折扣（保留小数点后的0）
+     *
+     * @param salePrice   售价
+     * @param originPrice 原价
+     * @return 折扣str
+     */
+    public static String calculateDiscount(Integer salePrice, Integer originPrice) {
+        if(salePrice==null ||originPrice==null){
+            return null;
+        }
+        return new BigDecimal(String.valueOf(salePrice * 10)).divide(new BigDecimal(String.valueOf(originPrice)), 1, BigDecimal.ROUND_DOWN).toString();
+    }
+
 }
