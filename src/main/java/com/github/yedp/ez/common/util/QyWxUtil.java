@@ -187,6 +187,13 @@ public class QyWxUtil {
     }
 
 
+    /**
+     *
+     * @param corpId 应用id
+     * @param corpSecret 应用secret
+     * @return accessToken
+     * @throws IOException io异常
+     */
     public static RetObj<QyWxAccessTokenRes> getAccessToken(String corpId, String corpSecret) throws IOException {
         String url = ACCESS_URL.concat(corpId).concat("&corpsecret=").concat(corpSecret);
         String res = HttpUtil.returnGetBody(url);
@@ -201,10 +208,11 @@ public class QyWxUtil {
     /**
      * 发送企业微信应用通知
      *
-     * @param agentId
-     * @param userIds
-     * @param content
-     * @return
+     * @param agentId  应用id
+     * @param userIds 用户id，多个用|隔开，最多1000个
+     * @param content 通知消息体，长不超过2048个字节
+     * @return 发送结果
+     * @throws IOException io异常
      */
     public static RetObj sendNotification(String accessToken, Integer agentId, String userIds, String content) throws IOException {
         QyWxNoticeReq qyWxNoticeReq = new QyWxNoticeReq();
