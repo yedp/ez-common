@@ -5,8 +5,7 @@ import java.util.Date;
 
 /**
  * @author yedp
- * @date 2022/2/2111:39
- * @comment
+ * 2022/2/2111:39
  **/
 public class AccessTokenVo implements Serializable {
     private String accessToken;

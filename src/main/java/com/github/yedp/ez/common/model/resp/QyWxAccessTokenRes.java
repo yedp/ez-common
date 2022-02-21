@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author yedp
- * @date 2022/2/2111:19
- * @comment
+ *  2022/2/2111:19
  **/
 public class QyWxAccessTokenRes extends QyWxBaseResp {
 

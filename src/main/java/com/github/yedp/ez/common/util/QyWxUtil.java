@@ -207,7 +207,7 @@ public class QyWxUtil {
 
     /**
      * 发送企业微信应用通知
-     *
+     * @param accessToken  token
      * @param agentId  应用id
      * @param userIds 用户id，多个用|隔开，最多1000个
      * @param content 通知消息体，长不超过2048个字节

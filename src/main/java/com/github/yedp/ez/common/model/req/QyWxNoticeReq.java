@@ -6,8 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author yedp
- * @date 2022/2/2110:52
- * @comment
+ *  2022/2/2110:52
  **/
 public class QyWxNoticeReq implements Serializable {
 
