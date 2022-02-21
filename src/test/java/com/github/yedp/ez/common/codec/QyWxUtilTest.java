@@ -1,9 +1,11 @@
 package com.github.yedp.ez.common.codec;
 
 import com.github.yedp.ez.common.model.RetObj;
+import com.github.yedp.ez.common.model.resp.QyWxAccessTokenRes;
 import com.github.yedp.ez.common.util.FileUtil;
 import com.github.yedp.ez.common.util.JsonUtil;
 import com.github.yedp.ez.common.util.QyWxUtil;
+import netscape.javascript.JSObject;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
@@ -54,15 +56,16 @@ public class QyWxUtilTest {
     @Test
     public void tesSendImage() throws IOException {
         File file = new File("D:/qrcode.png");
-        RetObj retObj = QyWxUtil.sendImage(groupId,file);
+        RetObj retObj = QyWxUtil.sendImage(groupId, file);
         System.out.println(JsonUtil.toJsonString(retObj));
     }
 
     @Test
     public void tesSendNews() throws IOException {
-        RetObj retObj = QyWxUtil.sendNews(groupId,"测试标题","测试描述","www.qq.com","http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png");
+        RetObj retObj = QyWxUtil.sendNews(groupId, "测试标题", "测试描述", "www.qq.com", "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png");
         System.out.println(JsonUtil.toJsonString(retObj));
     }
+
 
 
 }

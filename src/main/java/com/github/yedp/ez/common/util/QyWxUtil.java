@@ -3,6 +3,7 @@ package com.github.yedp.ez.common.util;
 import com.github.yedp.ez.common.enums.RetCodeEnum;
 import com.github.yedp.ez.common.model.RetObj;
 import com.github.yedp.ez.common.model.req.*;
+import com.github.yedp.ez.common.model.resp.QyWxAccessTokenRes;
 import com.github.yedp.ez.common.model.resp.QyWxBaseResp;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
@@ -15,6 +16,8 @@ import java.util.List;
 public class QyWxUtil {
     private static final String UPLOAD_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/upload_media?type=file&key=";
     private static final String SEND_URL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=";
+    private static final String NOTICE_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=";
+    private static final String ACCESS_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=";
 
 
     /**
@@ -105,9 +108,9 @@ public class QyWxUtil {
      * 发送图片
      *
      * @param groupId 群key
-     * @param base64 图片内容的base64编码
-     * @param md5 图片内容（base64编码前）的md5值
-     * @return  结果
+     * @param base64  图片内容的base64编码
+     * @param md5     图片内容（base64编码前）的md5值
+     * @return 结果
      * @throws IOException io异常信息
      */
     public static RetObj sendImage(String groupId, String base64, String md5) throws IOException {
@@ -133,15 +136,15 @@ public class QyWxUtil {
     /**
      * 发送图文消息
      *
-     * @param groupId 群key
-     * @param title 标题
+     * @param groupId     群key
+     * @param title       标题
      * @param description 描述
-     * @param url  链接
-     * @param picUrl 图片链接
+     * @param url         链接
+     * @param picUrl      图片链接
      * @return 结果
      * @throws IOException io异常
      */
-    public static RetObj sendNews(String groupId, String title,String description,String url ,String picUrl) throws IOException {
+    public static RetObj sendNews(String groupId, String title, String description, String url, String picUrl) throws IOException {
         QyWxNewsReq.ArticlesInfo articlesInfo = new QyWxNewsReq.ArticlesInfo();
         articlesInfo.setTitle(title);
         articlesInfo.setDescription(description);
@@ -149,13 +152,13 @@ public class QyWxUtil {
         articlesInfo.setPicurl(picUrl);
         List<QyWxNewsReq.ArticlesInfo> articlesInfos = new ArrayList<>();
         articlesInfos.add(articlesInfo);
-        return sendNews(groupId,articlesInfos);
+        return sendNews(groupId, articlesInfos);
     }
 
     /**
      * 发送图文消息
      *
-     * @param groupId 群key
+     * @param groupId      群key
      * @param articlesInfo 图文信息
      * @return 结果
      * @throws IOException io异常
@@ -163,13 +166,13 @@ public class QyWxUtil {
     public static RetObj sendNews(String groupId, QyWxNewsReq.ArticlesInfo articlesInfo) throws IOException {
         List<QyWxNewsReq.ArticlesInfo> articlesInfos = new ArrayList<>();
         articlesInfos.add(articlesInfo);
-        return sendNews(groupId,articlesInfos);
+        return sendNews(groupId, articlesInfos);
     }
 
     /**
      * 发送图文消息
      *
-     * @param groupId 群key
+     * @param groupId       群key
      * @param articlesInfos 图文信息列表
      * @return 结果
      * @throws IOException io异常
@@ -183,6 +186,39 @@ public class QyWxUtil {
         return parseRetObj(res);
     }
 
+
+    public static RetObj<QyWxAccessTokenRes> getAccessToken(String corpId, String corpSecret) throws IOException {
+        String url = ACCESS_URL.concat(corpId).concat("&corpsecret=").concat(corpSecret);
+        String res = HttpUtil.returnGetBody(url);
+        QyWxAccessTokenRes qyWxAccessTokenRes = JsonUtil.readValue(res, QyWxAccessTokenRes.class);
+        if (qyWxAccessTokenRes != null && qyWxAccessTokenRes.getErrcode() != null && qyWxAccessTokenRes.getErrcode() == 0) {
+            return RetObj.success(qyWxAccessTokenRes);
+        } else {
+            return RetObj.error(qyWxAccessTokenRes != null ? qyWxAccessTokenRes.getErrmsg() : "获取AccessTaken失败");
+        }
+    }
+
+    /**
+     * 发送企业微信应用通知
+     *
+     * @param agentId
+     * @param userIds
+     * @param content
+     * @return
+     */
+    public static RetObj sendNotification(String accessToken, Integer agentId, String userIds, String content) throws IOException {
+        QyWxNoticeReq qyWxNoticeReq = new QyWxNoticeReq();
+        qyWxNoticeReq.setAgentid(agentId);
+        qyWxNoticeReq.setMsgtype("text");
+        qyWxNoticeReq.setTouser(userIds);
+        QyWxNoticeReq.TextDTO textDTO = new QyWxNoticeReq.TextDTO();
+        textDTO.setContent(content);
+        qyWxNoticeReq.setText(textDTO);
+        String res = HttpUtil.returnPostBody(NOTICE_URL.concat(accessToken), JsonUtil.toJsonString(qyWxNoticeReq));
+        return parseRetObj(res);
+    }
+
+
     /**
      * 解析返回字符串为返回对象
      *
@@ -195,11 +231,12 @@ public class QyWxUtil {
         }
         QyWxBaseResp resp = JsonUtil.readValue(res, QyWxBaseResp.class);
         if (resp != null) {
-            if (resp.getErrcode() != null && resp.getErrcode() == 0) {
+            if (resp.getErrcode() != null && resp.getErrcode() != null && resp.getErrcode() == 0) {
                 return RetObj.success(resp);
             }
         }
         return RetObj.error(RetCodeEnum.BUSINESS_ERROR, resp);
     }
+
 
 }
