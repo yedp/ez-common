@@ -14,14 +14,14 @@ public class ClassUtil {
     /**
      * 反射赋值
      *
-     * @param clazz 对象类
-     * @param t 对象
+     * @param clazz        对象类
+     * @param t            对象
      * @param propertyName 字段名称
-     * @param value 字段值
-     * @param <T> 对象类型
-     * @throws NoSuchMethodException 异常
+     * @param value        字段值
+     * @param <T>          对象类型
+     * @throws NoSuchMethodException     异常
      * @throws InvocationTargetException 异常
-     * @throws IllegalAccessException 异常
+     * @throws IllegalAccessException    异常
      */
     public static <T> void invoke(Class<T> clazz, T t, String propertyName, Object value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (propertyName.indexOf("_") > 0) {
@@ -64,7 +64,7 @@ public class ClassUtil {
     /**
      * 将map的value值转为实体类中字段类型匹配的方法
      *
-     * @param value 值
+     * @param value          值
      * @param fieldTypeClass 字段类型
      * @return 转换后的值
      */
@@ -96,7 +96,7 @@ public class ClassUtil {
     /**
      * 将map的value值转为实体类中字段类型匹配的方法
      *
-     * @param value 值
+     * @param value          值
      * @param fieldTypeClass 类型
      * @return 转换后的值
      */
@@ -245,5 +245,21 @@ public class ClassUtil {
         public void setFieldValueList(List<List<String>> fieldValueList) {
             this.fieldValueList = fieldValueList;
         }
+    }
+
+    /**
+     * 判断一个对象是否是某个类型
+     * @param object 对象
+     * @param clazz 类型
+     * @return 匹配结果
+     */
+    public static boolean isObjectInstanceClass(Object object, Class clazz) {
+        if (object == null || clazz == null) {
+            return false;
+        }
+        if (object.getClass().equals(clazz)) {
+            return true;
+        }
+        return false;
     }
 }

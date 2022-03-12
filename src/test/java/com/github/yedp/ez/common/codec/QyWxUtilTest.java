@@ -66,6 +66,23 @@ public class QyWxUtilTest {
         System.out.println(JsonUtil.toJsonString(retObj));
     }
 
+    @Test
+    public void getAccessToken() throws IOException {
+        String corpId = "ww957f9297596400e8";
+        String secret  = "1WhPNCOtdaXxA308S2ooN3pEvZwkcPt6srH5YK4RGtQ";
+        String accessToken = null;
+        RetObj<QyWxAccessTokenRes> resRetObj= QyWxUtil.getAccessToken(corpId,secret);
+        if(resRetObj.getCode() == 200 && resRetObj.getData() != null){
+            accessToken =   resRetObj.getData().getAccessToken();
+        }
+        System.out.println(accessToken);
+    }
 
+    @Test
+    public void sendNotice() throws IOException {
+        Integer agentId = 1000002;
+        String accessToken = "ezOp8xTWSZy2sOldF44boGwr8hohRfzhKP4x5oqF_aIJWv-VhCbJR9-24lY4iss7Qcb1V2XQtQ0RAGfJg4NSk-BU-kyT7fBimrfmbtCcjFT9TdqcJLCVx6ojfawbu0SVW6TDz32zss9CnHzlGMLCdnwnkcGUF6WskFiLpMZuEjD9vBHyayzfjATt-Co-2dbKhRpPdaIXwqETUlkFfIZlxA";
+        QyWxUtil.sendNotification(accessToken,agentId,"YeDaoPing","测试消息");
+    }
 
 }

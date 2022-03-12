@@ -7,7 +7,7 @@
 
     <groupId>com.github.yedp</groupId>
     <artifactId>ez-common</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <gpg.executable>D:\program\GnuPG\bin\gpg</gpg.executable>
