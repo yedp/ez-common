@@ -270,7 +270,7 @@ public class BeanUtils {
      *
      * @param obj 对象
      */
-    public static void notNull(Object obj) {
+    public static void setNullFieldToDefaultValue(Object obj) {
 
         if (null == obj) {
             return;
