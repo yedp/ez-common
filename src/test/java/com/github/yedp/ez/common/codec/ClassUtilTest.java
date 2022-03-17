@@ -1,6 +1,6 @@
 package com.github.yedp.ez.common.codec;
 
-import com.github.yedp.ez.common.util.ClassUtil;
+import com.github.yedp.ez.common.util.BeanUtils;
 import org.junit.Test;
 
 /**
@@ -16,15 +16,15 @@ public class ClassUtilTest {
         String string1 = "s1";
         ClassUtilTest test = new ClassUtilTest();
 
-        System.out.println("int1 instance Integer:" + ClassUtil.isObjectInstanceClass(int1, Integer.class));
-        System.out.println("string1 instance String:" + ClassUtil.isObjectInstanceClass(string1, String.class));
-        System.out.println("integer1 instance Integer:" + ClassUtil.isObjectInstanceClass(integer1, Integer.class));
-        System.out.println("test instance ClassUtilTest:" + ClassUtil.isObjectInstanceClass(test, ClassUtilTest.class));
+        System.out.println("int1 instance Integer:" + BeanUtils.isObjectInstanceClass(int1, Integer.class));
+        System.out.println("string1 instance String:" + BeanUtils.isObjectInstanceClass(string1, String.class));
+        System.out.println("integer1 instance Integer:" + BeanUtils.isObjectInstanceClass(integer1, Integer.class));
+        System.out.println("test instance ClassUtilTest:" + BeanUtils.isObjectInstanceClass(test, ClassUtilTest.class));
 
-        System.out.println("int1 instance String:" + ClassUtil.isObjectInstanceClass(int1, String.class));
-        System.out.println("string1 instance Integer:" + ClassUtil.isObjectInstanceClass(string1, Integer.class));
-        System.out.println("integer1 instance String:" + ClassUtil.isObjectInstanceClass(integer1, String.class));
-        System.out.println("test instance ClassUtil:" + ClassUtil.isObjectInstanceClass(test, ClassUtil.class));
+        System.out.println("int1 instance String:" + BeanUtils.isObjectInstanceClass(int1, String.class));
+        System.out.println("string1 instance Integer:" + BeanUtils.isObjectInstanceClass(string1, Integer.class));
+        System.out.println("integer1 instance String:" + BeanUtils.isObjectInstanceClass(integer1, String.class));
+        System.out.println("test instance ClassUtil:" + BeanUtils.isObjectInstanceClass(test, BeanUtils.class));
 
     }
 }

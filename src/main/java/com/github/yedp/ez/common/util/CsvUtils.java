@@ -88,7 +88,7 @@ public class CsvUtils {
                     T t = clazz.newInstance();
                     for (String header : headers) {
                         Object value = record.get(header);        // 属性值
-                        ClassUtil.invoke(clazz, t, header, value);
+                        BeanUtils.invoke(clazz, t, header, value);
                     }
                     tList.add(t);
                 } catch (Exception e) {
@@ -125,7 +125,7 @@ public class CsvUtils {
      * @param charsetName 编码类型
      */
     public static <T> void export(Class<T> clazz, List<T> dataList, OutputStream os, String charsetName) {
-        ClassUtil.FieldDataInfo fieldDataInfo = ClassUtil.getFieldValueList(clazz, dataList);
+        BeanUtils.FieldDataInfo fieldDataInfo = BeanUtils.getFieldValueList(clazz, dataList);
         export(fieldDataInfo.getFieldNameList().toArray(new String[0]), fieldDataInfo.getFieldValueList(), os, charsetName);
     }
 

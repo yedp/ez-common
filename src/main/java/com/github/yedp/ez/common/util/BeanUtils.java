@@ -5,11 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class ClassUtil {
-    private final static Logger log = LoggerFactory.getLogger(ClassUtil.class);
+public class BeanUtils {
+    private final static Logger log = LoggerFactory.getLogger(BeanUtils.class);
 
     /**
      * 反射赋值
@@ -28,7 +29,7 @@ public class ClassUtil {
             propertyName = StringUtils.lineToHump(propertyName);    // 属性名,驼峰
         }
         String setMethodName = "set" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-        Field field = ClassUtil.getClassField(clazz, propertyName);    //获取和map的key匹配的属性名称
+        Field field = BeanUtils.getClassField(clazz, propertyName);    //获取和map的key匹配的属性名称
         if (field == null) {
             return;
         }
@@ -249,8 +250,9 @@ public class ClassUtil {
 
     /**
      * 判断一个对象是否是某个类型
+     *
      * @param object 对象
-     * @param clazz 类型
+     * @param clazz  类型
      * @return 匹配结果
      */
     public static boolean isObjectInstanceClass(Object object, Class clazz) {
@@ -261,5 +263,117 @@ public class ClassUtil {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 初始化对象属性值为null的值.
+     *
+     * @param obj 对象
+     */
+    public static void notNull(Object obj) {
+
+        if (null == obj) {
+            return;
+        }
+        Field[] fields = obj.getClass().getDeclaredFields();
+        Class cla = obj.getClass();
+        if (fields != null && fields.length > 0) {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                try {
+                    if (null == field.get(obj)) {
+                        setFieldDefaultValue(obj, cla, field);
+                    }
+                } catch (Exception e) {
+                    log.error("notNull", JsonUtil.toJsonString(obj));
+                    log.error("notNull", e);
+                }
+                field.setAccessible(false);
+            }
+        }
+    }
+
+    /**
+     * 设置对象字段默认值
+     *
+     * @param obj   对象
+     * @param cla   类
+     * @param field 字段
+     * @throws Exception 异常
+     */
+    private static void setFieldDefaultValue(Object obj, Class cla, Field field)
+            throws Exception {
+        Class type = field.getType();
+        String fieldName = field.getName();
+        String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        Method method;
+        if (String.class.equals(type)) {
+            method = cla.getMethod(methodName, String.class);
+            method.invoke(obj, "");
+        } else if (char.class.equals(type)) {
+            method = cla.getMethod(methodName, char.class);
+            method.invoke(obj, ' ');
+        } else if (Character.class.equals(type)) {
+            method = cla.getMethod(methodName, Character.class);
+            method.invoke(obj, ' ');
+        } else if (boolean.class.equals(type)) {
+            method = cla.getMethod(methodName, boolean.class);
+            method.invoke(obj, false);
+        } else if (Boolean.class.equals(type)) {
+            method = cla.getMethod(methodName, Boolean.class);
+            method.invoke(obj, false);
+        } else if (byte.class.equals(type)) {
+            method = cla.getMethod(methodName, byte.class);
+            method.invoke(obj, (byte) 0);
+        } else if (Byte.class.equals(type)) {
+            method = cla.getMethod(methodName, Byte.class);
+            method.invoke(obj, (byte) 0);
+        } else if (short.class.equals(type)) {
+            method = cla.getMethod(methodName, short.class);
+            method.invoke(obj, (short) 0);
+        } else if (Short.class.equals(type)) {
+            method = cla.getMethod(methodName, Short.class);
+            method.invoke(obj, (short) 0);
+        } else if (int.class.equals(type)) {
+            method = cla.getMethod(methodName, int.class);
+            method.invoke(obj, 0);
+        } else if (Integer.class.equals(type)) {
+            method = cla.getMethod(methodName, Integer.class);
+            method.invoke(obj, 0);
+        } else if (long.class.equals(type)) {
+            method = cla.getMethod(methodName, long.class);
+            method.invoke(obj, 0);
+        } else if (Long.class.equals(type)) {
+            method = cla.getMethod(methodName, Long.class);
+            method.invoke(obj, 0L);
+        } else if (float.class.equals(type)) {
+            method = cla.getMethod(methodName, float.class);
+            method.invoke(obj, 0.0f);
+        } else if (Float.class.equals(type)) {
+            method = cla.getMethod(methodName, Float.class);
+            method.invoke(obj, 0.0f);
+        } else if (double.class.equals(type)) {
+            method = cla.getMethod(methodName, double.class);
+            method.invoke(obj, 0.0d);
+        } else if (Double.class.equals(type)) {
+            method = cla.getMethod(methodName, Double.class);
+            method.invoke(obj, 0.0d);
+        } else if (Date.class.equals(type)) {
+            method = cla.getMethod(methodName, Date.class);
+            method.invoke(obj, DateUtils.getStartDate());
+        } else if (BigDecimal.class.equals(type)) {
+            method = cla.getMethod(methodName, BigDecimal.class);
+            method.invoke(obj, new BigDecimal(0.0D));
+        }
+    }
+
+    /**
+     * 复制属性
+     *
+     * @param source 源对象
+     * @param target 目标对象
+     */
+    public static void copyProperties(Object source, Object target) {
+        org.springframework.beans.BeanUtils.copyProperties(source, target);
     }
 }
